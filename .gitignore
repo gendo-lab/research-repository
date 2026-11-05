@@ -1,0 +1,6 @@
+# 元データ（公開しない列・NAS のパスを含むため）
+*.xls
+*.xlsx
+# Jekyll の出力
+_site/
+.jekyll-cache/

@@ -1,0 +1,424 @@
+@charset "utf-8";
+
+/*
+    配色: 遠藤研究室ウェブサイト（https://www.robotics.mech.e.titech.ac.jp/gendo/）の
+    青（#005c92 / #3193cc）をアクセントにしたダークテーマ
+*/
+:root {
+    --bg: #1b1f23;          /* ページ背景 */
+    --surface: #252b31;     /* 本文の箱 */
+    --surface-2: #2e353c;   /* タブの中・表の見出し */
+    --border: #46515b;
+    --text: #dde3e8;
+    --text-strong: #ffffff;
+    --muted: #9aa5ae;
+    --primary: #005c92;     /* 研究室サイトのナビゲーションの青 */
+    --primary-light: #3193cc; /* 研究室サイトの選択中・ホバーの青 */
+    --link: #5fb3e6;        /* 暗い背景で読めるように明るくした青 */
+    --link-hover: #9ad0f2;
+}
+
+/* Body */
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    color: var(--text);
+}
+
+/* ヘッダ */
+header {
+    background: #14181c;
+    border-bottom: 6px solid var(--primary);
+    padding: 14px 0;
+    text-align: center;
+}
+
+/* 大学ロゴ｜タイトル｜（空き）の3列．タイトルは常に中央 */
+#header-container {
+    display: grid;
+    /* 左右の列を同じ幅に固定し，タイトルを画面の中央に置く */
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* 大学ロゴは画像に余白（アイソレーション）が含まれているため，そのまま表示する */
+.header-logo {
+    display: block;
+    justify-self: start;
+    line-height: 0;
+}
+
+.header-logo img {
+    display: block;
+    width: auto;
+    height: 64px;
+}
+
+.header-logo:hover {
+    opacity: 0.85;
+}
+
+header h1 {
+    margin: 4px 0;
+    font-size: 34px;
+    font-weight: bold;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+}
+
+/* 幅が狭いときは，ロゴを上の段，タイトルを下の段にする */
+@media screen and (max-width: 900px) {
+    #header-container {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        row-gap: 4px;
+    }
+
+    .header-logo {
+        justify-self: center;
+    }
+}
+
+header h1 a,
+header h1 a:hover {
+    color: var(--text-strong);
+    text-decoration: none;
+}
+
+/* 内容 */
+#content {
+    width: 80%;
+    max-width: 800px;
+    margin: 24px auto;
+    padding: 20px;
+    background: var(--surface);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    color: var(--text);
+}
+
+#content h2 {
+    color: var(--text-strong);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+footer {
+    background-color: #111418;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* リンク */
+a {
+    color: var(--link);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+}
+
+/* 一覧へ戻るボタン */
+.back-to-top-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.back-to-top-button:hover {
+    background-color: var(--primary-light);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* 論文用，表のスタイル */
+.publication-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 30px 0;
+    border: 2px solid var(--border);
+    position: relative;
+}
+
+.publication-table::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background-color: var(--primary);
+    margin-top: -20px;
+}
+
+.publication-table::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background-color: var(--primary);
+    margin-bottom: -20px;
+}
+
+.publication-table th,
+.publication-table td {
+    border: 1px solid var(--border);
+    padding: 10px;
+    text-align: left;
+}
+
+.publication-table th:first-child,
+.publication-table td:first-child {
+    text-align: center;
+    width: 120px;
+}
+
+.publication-table th {
+    background-color: var(--surface-2);
+    color: var(--text-strong);
+}
+
+/* 論文リンクボタン */
+.paper-link-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    background-color: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+    margin: 20px auto;
+}
+
+.paper-link-button:hover {
+    background-color: var(--primary-light);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* PDFダウンロードボタン（ページ最下部．T2R2 / 機関リポジトリへのリンク） */
+.pdf-download-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid var(--primary-light);
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+    margin: 30px auto 10px;
+}
+
+.pdf-download-button:hover {
+    background-color: var(--primary);
+    color: #fff;
+    text-decoration: none;
+}
+
+.pdf-download-note {
+    text-align: center;
+    font-size: 0.8em;
+    color: var(--muted);
+    margin: 0 0 20px;
+}
+
+/* 研究業績（タブ形式） */
+.publication-tabs {
+    margin-top: 20px;
+}
+
+.pub-tablist {
+    display: flex;
+    flex-wrap: nowrap;          /* 折り返さず1行に並べ，はみ出した分は横スクロール */
+    gap: 4px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border-bottom: 3px solid var(--primary);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.pub-tablist::-webkit-scrollbar {
+    height: 6px;
+}
+
+.pub-tablist::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.pub-tablist button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.pub-tablist button:hover {
+    background: var(--surface-2);
+    color: #fff;
+}
+
+.pub-tablist button[aria-selected="true"] {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.pub-count {
+    font-size: 0.75em;
+    font-weight: normal;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.pub-panel {
+    background: var(--surface-2);
+    padding: 10px 20px 20px;
+    border-radius: 0 0 8px 8px;
+    min-height: 200px;
+}
+
+.pub-category {
+    font-size: 1.05em;
+    color: #fff;
+    margin: 20px 0 8px;
+    padding-left: 10px;
+    border-left: 4px solid var(--primary-light);
+}
+
+.publication-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.publication-list li {
+    padding: 10px 4px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.6;
+}
+
+.publication-list li a {
+    font-weight: bold;
+}
+
+.pub-meta {
+    display: block;
+    font-size: 0.85em;
+    color: var(--muted);
+}
+
+.pub-year {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 0 6px;
+    font-size: 0.8em;
+    color: #fff;
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.pub-tag {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 0 6px;
+    font-size: 0.8em;
+    color: var(--text);
+    border: 1px solid var(--muted);
+    border-radius: 4px;
+}
+
+.pub-empty {
+    color: var(--muted);
+}
+
+/* 研究業績の検索欄 */
+.pub-search {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 10px 0 0;
+    padding: 10px 14px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1em;
+}
+
+.pub-search:focus {
+    outline: none;
+    border-color: var(--primary-light);
+}
+
+.pub-search[hidden] {
+    display: none;
+}
+
+/* スマホ対応 */
+@media screen and (max-width: 800px) {
+    header h1 {
+        font-size: 26px;
+    }
+
+    .header-logo img {
+        height: 48px;
+    }
+
+    #content {
+        width: auto;
+        margin: 16px 10px;
+    }
+
+    .pub-tablist button {
+        padding: 6px 12px;
+    }
+
+    .pub-panel {
+        padding: 8px 12px 16px;
+    }
+}

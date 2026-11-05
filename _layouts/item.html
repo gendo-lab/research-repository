@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+    業績1件の個別ページの共通レイアウト．
+    research/<年>/*.md のそれぞれに，GitHub Pages（Jekyll）がこのレイアウトを当てて HTML を作る．
+    表の中身は js_includes/data.js が research/index.json から作る．
+-->
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- 以降の相対パス（index.css など）をサイトのトップ基準にする -->
+    <base href="{{ site.baseurl }}/">
+    <title>{{ page["タイトル"] | escape }} | Gen ENDO Lab. Research Repository</title>
+    <meta name="description" content="研究業績：{{ page["タイトル"] | escape }}">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id="header-include"></div>
+    <script>
+        fetch('js_includes/header.html')
+            .then(res => res.text())
+            .then(data => document.getElementById('header-include').innerHTML = data);
+    </script>
+
+    <main id="content">
+        <div class="inner" id="item">
+            <p class="pub-empty" id="item-status">読み込み中…</p>
+        </div>
+    </main>
+
+    <script src="js_includes/data.js"></script>
+    <script src="js_includes/item.js"></script>
+
+    <div id="footer-include"></div>
+    <script>
+        fetch('js_includes/footer.html')
+            .then(res => res.text())
+            .then(data => document.getElementById('footer-include').innerHTML = data);
+    </script>
+</body>
+
+</html>

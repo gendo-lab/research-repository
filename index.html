@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gen ENDO Lab. Research Repository</title>
+    <meta name="description" content="遠藤研究室の研究業績一覧">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id="header-include"></div>
+    <script>
+        fetch('js_includes/header.html')
+            .then(res => res.text())
+            .then(data => document.getElementById('header-include').innerHTML = data);
+    </script>
+
+    <main id="content">
+        <div class="inner">
+            <!--
+                ■ 業績の追加・修正方法
+                research/<年>/ に業績1件につき1つのファイル（例 research/2024/paper-202407.md）を置いて push するだけです．
+                HTML を書く必要はありません．書き方は research/README.md，ひな形は research/_template/ を見てください．
+            -->
+            <input type="search" id="publication-search" class="pub-search"
+                placeholder="タイトル・著者・掲載誌で検索（スペース区切りで AND 検索）" aria-label="研究業績を検索" hidden>
+            <p id="publication-status" class="pub-empty">読み込み中…</p>
+            <div id="publication-tabs" class="publication-tabs" hidden>
+                <div class="pub-tablist" role="tablist" aria-label="年別の研究業績"></div>
+                <div class="pub-panel" role="tabpanel"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js_includes/data.js"></script>
+    <script src="js_includes/publications.js"></script>
+
+    <div id="footer-include"></div>
+    <script>
+        fetch('js_includes/footer.html')
+            .then(res => res.text())
+            .then(data => document.getElementById('footer-include').innerHTML = data);
+    </script>
+</body>
+
+</html>
