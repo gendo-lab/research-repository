@@ -258,22 +258,45 @@ a:hover {
 
 .pub-tablist {
     display: flex;
-    flex-wrap: nowrap;          /* 折り返さず1行に並べ，はみ出した分は横スクロール */
+    align-items: flex-end;
     gap: 4px;
+    border-bottom: 3px solid var(--primary);
+}
+
+/* 全件表示タブ（左端に固定） */
+.pub-tablist > button {
+    flex: none;
+}
+
+/* 年タブ（多いときは横スクロール） */
+.pub-year-tabs {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    border-bottom: 3px solid var(--primary);
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    /* スクロールバーは隠し，続きがある側を薄くぼかして示す（js_includes/publications.js が more-left / more-right を付ける） */
+    scrollbar-width: none;
 }
 
-.pub-tablist::-webkit-scrollbar {
-    height: 6px;
+.pub-year-tabs::-webkit-scrollbar {
+    display: none;
 }
 
-.pub-tablist::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
+.pub-year-tabs.more-right {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+}
+
+.pub-year-tabs.more-left {
+    -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to left, #000 calc(100% - 40px), transparent);
+}
+
+.pub-year-tabs.more-left.more-right {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
 }
 
 .pub-tablist button {

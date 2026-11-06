@@ -43,11 +43,15 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
     let query = '';
     const matches = it => !query || query.split(/[\s　]+/).every(w => !w || it.haystack.includes(norm(w)));
 
-    // 全件表示を先頭に，その後ろに年（新しい順）
+    // 全件表示（左端に固定）＋年の一覧（新しい順．多いときは横スクロール）
     const years = [...new Set(items.map(it => it.year))]
         .sort((a, b) => (/^\d+$/.test(b) - /^\d+$/.test(a)) || b.localeCompare(a, undefined, { numeric: true }));
     const tabs = [{ key: ALL, label: '全件表示' }]
         .concat(years.map(y => ({ key: y, label: y })));
+    // 年タブを入れる横スクロールの枠（全件表示タブはこの外に置いて固定する）
+    const yearTabs = document.createElement('div');
+    yearTabs.className = 'pub-year-tabs';
+    yearTabs.setAttribute('role', 'presentation');
 
     const itemsOf = key => (key === ALL ? items : items.filter(it => it.year === key)).filter(matches);
     const categoryIndex = c => {
@@ -119,10 +123,12 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
             b.tabIndex = on ? 0 : -1;
             if (on) {
                 panel.setAttribute('aria-labelledby', b.id);
-                // 選んだタブが横スクロールの外にあれば見える位置まで送る（ページ自体は縦に動かさない）
-                const left = b.offsetLeft - tablist.offsetLeft;
-                if (left < tablist.scrollLeft || left + b.offsetWidth > tablist.scrollLeft + tablist.clientWidth) {
-                    tablist.scrollLeft = left - (tablist.clientWidth - b.offsetWidth) / 2;
+                // 選んだ年タブがスクロールの外にあれば見える位置まで送る（ページ自体は縦に動かさない）
+                if (b.parentNode === yearTabs) {
+                    const left = b.offsetLeft - yearTabs.offsetLeft;
+                    if (left < yearTabs.scrollLeft || left + b.offsetWidth > yearTabs.scrollLeft + yearTabs.clientWidth) {
+                        yearTabs.scrollLeft = left - (yearTabs.clientWidth - b.offsetWidth) / 2;
+                    }
                 }
             }
             b.querySelector('.pub-count').textContent = itemsOf(b.dataset.key).length;
@@ -146,8 +152,9 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
         count.className = 'pub-count';
         b.appendChild(count);
         b.addEventListener('click', () => select(t.key, true));
-        tablist.appendChild(b);
+        (t.key === ALL ? tablist : yearTabs).appendChild(b);
     });
+    tablist.appendChild(yearTabs);
 
     // 左右キーでタブ移動
     tablist.addEventListener('keydown', e => {
@@ -159,12 +166,21 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
         next.click();
     });
 
-    // マウスホイールの縦回転でもタブを横にスクロールできるようにする（タブがはみ出しているときだけ）
-    tablist.addEventListener('wheel', e => {
-        if (tablist.scrollWidth <= tablist.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-        tablist.scrollLeft += e.deltaY;
+    // マウスホイールの縦回転でも年タブを横にスクロールできるようにする（はみ出しているときだけ）
+    yearTabs.addEventListener('wheel', e => {
+        if (yearTabs.scrollWidth <= yearTabs.clientWidth || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        yearTabs.scrollLeft += e.deltaY;
         e.preventDefault();
     }, { passive: false });
+
+    // 左右に続きがあるかどうか（端をぼかす表示に使う）
+    const updateEdges = () => {
+        const max = yearTabs.scrollWidth - yearTabs.clientWidth;
+        yearTabs.classList.toggle('more-left', yearTabs.scrollLeft > 1);
+        yearTabs.classList.toggle('more-right', yearTabs.scrollLeft < max - 1);
+    };
+    yearTabs.addEventListener('scroll', updateEdges, { passive: true });
+    window.addEventListener('resize', updateEdges);
 
     // 検索: 入力のたびに現在のタブを絞り込む（タブの件数も一致件数に変わる）
     search.addEventListener('input', () => {
@@ -177,4 +193,5 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
     search.hidden = false;
     // URL の #2025 や #all で初期タブを指定可能．指定がなければ全件表示
     select(decodeURIComponent(location.hash.slice(1)), false);
+    updateEdges();
 })();

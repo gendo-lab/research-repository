@@ -45,11 +45,11 @@
     });
     root.append(table);
 
-    // PDF（T2R2 などの URL）があるときだけ表示
+    // PDF（T2R2 などに置いてある本文ファイルの URL）があるときだけ表示
     if (it.pdf) {
         root.append(
             el('a', { href: it.pdf, className: 'pdf-download-button', target: '_blank', rel: 'noopener', textContent: 'PDFをダウンロード' }),
-            el('p', { className: 'pdf-download-note', textContent: 'T2R2 のページに移動します' })
+            el('p', { className: 'pdf-download-note', textContent: '本文の PDF ファイル（T2R2）を開きます' })
         );
     }
     root.append(backButton());
