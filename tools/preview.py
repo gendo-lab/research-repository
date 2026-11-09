@@ -1,7 +1,7 @@
 """サイトを手元で確認するための簡易サーバー（Jekyll / Ruby は不要）．
 
 使い方（リポジトリのルートで）:
-    python tools/preview.py          （ポート 4000）
+    python tools/preview.py          （4000 から順に空いているポートを自動で選ぶ）
     python tools/preview.py 8080     （ポートを指定する場合）
 表示された URL をブラウザで開く．終了は Ctrl+C．
 
@@ -11,13 +11,16 @@ GitHub Pages（Jekyll）がビルド時に行う次の2つを，アクセスの�
 .md を保存してブラウザを再読み込みすれば反映される．
 ※ .md の書き方は「項目: 値」を1行ずつ並べる形だけに対応（research/README.md の書き方）．
 """
+import errno
 import functools
 import html
 import http.server
 import json
 import pathlib
 import re
+import socket
 import sys
+import threading
 import urllib.parse
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -106,14 +109,48 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return super().do_GET()
 
 
+class Server6(http.server.ThreadingHTTPServer):
+    address_family = socket.AF_INET6
+
+
+def open_servers(port, handler):
+    """localhost は IPv4(127.0.0.1) と IPv6(::1) のどちらでも来るので両方で待ち受ける．
+    IPv4 側が使用中なら None を返す（IPv6 が無い環境では IPv4 だけで動かす）"""
+    try:
+        v4 = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+    except OSError:
+        return None
+    try:
+        v6 = Server6(("::1", port), handler)
+    except OSError as e:
+        if e.errno == errno.EADDRINUSE:
+            v4.server_close()   # IPv6 側だけ使用中 → このポートは使わない
+            return None
+        return [v4]
+    return [v4, v6]
+
+
 if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 4000
     handler = functools.partial(Handler, directory=str(ROOT))
     # Windows では同じポートで2つ目のサーバーが起動できてしまい，古い方が応答し続けることがあるので禁止する
     http.server.ThreadingHTTPServer.allow_reuse_address = False
+    if len(sys.argv) > 1:
+        candidates = [int(sys.argv[1])]   # 指定されたポートだけを使う
+    else:
+        candidates = range(4000, 4100)    # 4000 から順に空いているポートを探す
+    servers = None
+    for port in candidates:
+        servers = open_servers(port, handler)
+        if servers:
+            break
+    if not servers:
+        if len(sys.argv) > 1:
+            sys.exit(f"ポート {candidates[0]} は使用中です．別のポートを指定するか，ポートを指定せずに起動してください．")
+        sys.exit("ポート 4000〜4099 がすべて使用中です．前に起動したプレビューを Ctrl+C で止めてください．")
+    for s in servers[1:]:
+        threading.Thread(target=s.serve_forever, daemon=True).start()
+    print(f"http://localhost:{servers[0].server_address[1]}/ で確認できます（Ctrl+C で終了）", flush=True)
     try:
-        server = http.server.ThreadingHTTPServer(("localhost", port), handler)
-    except OSError:
-        sys.exit(f"ポート {port} は使用中です．前に起動したプレビューを Ctrl+C で止めるか，別のポートを指定してください（例 python tools/preview.py 4001）．")
-    print(f"http://localhost:{port}/ で確認できます（Ctrl+C で終了）", flush=True)
-    server.serve_forever()
+        servers[0].serve_forever()
+    except KeyboardInterrupt:
+        pass

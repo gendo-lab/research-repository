@@ -7,3 +7,5 @@ _site/
 # 変換時の確認用リスト
 tools/review.csv
 tools/t2r2_report.csv
+# pythonのキャッシュ
+__pycache__/

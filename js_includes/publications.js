@@ -62,29 +62,34 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
     };
 
     function buildLi(it, showYear) {
+        // 項目全体を1つのリンクにする（どこをクリックしても個別ページへ移る）
         const li = document.createElement('li');
+        const box = document.createElement(it.url ? 'a' : 'div');
+        box.className = 'pub-item';
+        if (it.url) box.href = it.url;
         if (showYear) {
             const y = document.createElement('span');
             y.className = 'pub-year';
             y.textContent = it.year;
-            li.appendChild(y);
+            box.appendChild(y);
         }
         if (it.tag) {
             const t = document.createElement('span');
             t.className = 'pub-tag';
             t.textContent = it.tag;
-            li.appendChild(t);
+            box.appendChild(t);
         }
-        const a = document.createElement('a');
-        a.href = it.url;
-        a.textContent = it.title;
-        li.appendChild(a);
+        const title = document.createElement('span');
+        title.className = 'pub-title';
+        title.textContent = it.title;
+        box.appendChild(title);
         [it.authors, it.detail].filter(Boolean).forEach(text => {
             const s = document.createElement('span');
             s.className = 'pub-meta';
             s.textContent = text;
-            li.appendChild(s);
+            box.appendChild(s);
         });
+        li.appendChild(box);
         return li;
     }
 
