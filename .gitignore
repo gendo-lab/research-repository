@@ -1,0 +1,11 @@
+# 元データ（公開しない列・NAS のパスを含むため）
+*.xls
+*.xlsx
+# Jekyll の出力
+_site/
+.jekyll-cache/
+# 変換時の確認用リスト
+tools/review.csv
+tools/t2r2_report.csv
+# pythonのキャッシュ
+__pycache__/

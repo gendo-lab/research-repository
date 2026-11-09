@@ -1,0 +1,21 @@
+# GitHub Pages (Jekyll) の設定
+# 公開URL: https://gendo-lab.github.io/research-repository/
+title: Gen ENDO Lab. Research Repository
+baseurl: /research-repository
+plugins:
+  - jekyll-sitemap
+
+# research/ 以下の .md（業績1件）には，個別ページのレイアウトを自動で当てる
+defaults:
+  - scope:
+      path: "research"
+    values:
+      layout: item
+
+exclude:
+  - docs
+  - tools
+  - "*.xls"
+  - "*.xlsx"
+  - README.md
+  - research/README.md
