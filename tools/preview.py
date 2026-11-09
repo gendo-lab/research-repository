@@ -80,8 +80,11 @@ def item_page(md):
     data = front_matter(md) or {}
     text = LAYOUT.read_text(encoding="utf-8")
     text = text.replace("{{ site.baseurl }}", "")
-    return re.sub(r'\{\{ page\["([^"]+)"\] \| escape \}\}',
-                  lambda m: html.escape(str(data.get(m.group(1)) or "")), text)
+    # {{ page["項目"] | escape }} と {{ page["項目"] | default: page["項目2"] | escape }} を値に置き換える
+    def value(m):
+        keys = re.findall(r'page\["([^"]+)"\]', m.group(0))
+        return html.escape(str(next((data.get(k) for k in keys if data.get(k)), "")))
+    return re.sub(r'\{\{ page\[[^}]*\| escape \}\}', value, text)
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):

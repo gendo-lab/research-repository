@@ -1,5 +1,6 @@
 ---
-タイトル: "自重補償用ワイヤを有する多関節マニピュレータ Articulated Manipulator Having Gravity-Compensation Wire"
+タイトル（日本語）: "自重補償用ワイヤを有する多関節マニピュレータ"
+タイトル（英語）: "Articulated Manipulator Having Gravity-Compensation Wire"
 状態: "登録"
 発明者: "遠藤玄, 堀米篤史"
 出願人: "東京工業大学"
