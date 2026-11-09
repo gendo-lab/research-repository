@@ -1,0 +1,24 @@
+# main への PR は、同じリポジトリの feature/pre_release ブランチからのもののみ許可する
+name: check-source-branch
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize, edited]
+
+jobs:
+  check-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify PR comes from feature/pre_release
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BASE_REPO: ${{ github.repository }}
+        run: |
+          if [ "$HEAD_REF" != "feature/pre_release" ] || [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+            echo "::error::main へのPRは feature/pre_release ブランチからのみ受け付けます (現在: $HEAD_REPO:$HEAD_REF)"
+            exit 1
+          fi
+          echo "OK: $HEAD_REPO:$HEAD_REF"
+
