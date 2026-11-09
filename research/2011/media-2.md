@@ -1,5 +1,6 @@
 ---
-タイトル: "Low Cost Personal Porter Robot"
+タイトル（日本語）: ""
+タイトル（英語）: "Low Cost Personal Porter Robot"
 種別: "Webメディア"
 媒体: "DigInfo"
 日付: "2011-09-21"

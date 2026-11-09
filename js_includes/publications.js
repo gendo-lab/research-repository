@@ -1,5 +1,5 @@
 // 研究業績一覧（index.html）のタブ表示．
-// Sugi-kmmm.github.io の publications.js を元に，データの読み込みを data/*.csv（js_includes/data.js）に変更し，
+// Sugi-kmmm.github.io の publications.js を元に，データの読み込みを research/index.json（js_includes/data.js）に変更し，
 // 全件表示タブ・キーワード検索・横スクロールのタブを加えたもの．
 
 // 種別の表示順（必要に応じて追加・変更してください）
@@ -17,7 +17,7 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
     try {
         items = await loadPublications();
     } catch (e) {
-        status.textContent = '業績一覧を読み込めませんでした（' + e.message + '）．';
+        status.textContent = t('業績一覧を読み込めませんでした') + paren(e.message) + (LANG === 'en' ? '.' : '．');
         return;
     }
     items = items
@@ -32,13 +32,14 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
     }
 
     if (items.length === 0) {
-        status.textContent = '現在掲載している業績はありません．';
+        status.textContent = t('現在掲載している業績はありません．');
         return;
     }
 
     // 検索用の文字列（全角・半角，大文字・小文字，空白の違いを無視）
     const norm = s => (s || '').normalize('NFKC').toLowerCase().replace(/\s+/g, '');
-    items.forEach(it => { it.haystack = norm([it.title, it.authors, it.detail, it.category, it.tag].join(' ')); });
+    // 種別・タイトル・著者・掲載誌は，日本語・英語のどちらでも検索できるようにする
+    items.forEach(it => { it.haystack = norm([it.title, it.authors, it.detail, it.category, it.categoryLabel, it.tag, it.otherLang].join(' ')); });
 
     let query = '';
     const matches = it => !query || query.split(/[\s　]+/).every(w => !w || it.haystack.includes(norm(w)));
@@ -46,8 +47,8 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
     // 全件表示（左端に固定）＋年の一覧（新しい順．多いときは横スクロール）
     const years = [...new Set(items.map(it => it.year))]
         .sort((a, b) => (/^\d+$/.test(b) - /^\d+$/.test(a)) || b.localeCompare(a, undefined, { numeric: true }));
-    const tabs = [{ key: ALL, label: '全件表示' }]
-        .concat(years.map(y => ({ key: y, label: y })));
+    const tabs = [{ key: ALL, label: t('全件表示') }]
+        .concat(years.map(y => ({ key: y, label: t(y) })));
     // 年タブを入れる横スクロールの枠（全件表示タブはこの外に置いて固定する）
     const yearTabs = document.createElement('div');
     yearTabs.className = 'pub-year-tabs';
@@ -70,7 +71,7 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
         if (showYear) {
             const y = document.createElement('span');
             y.className = 'pub-year';
-            y.textContent = it.year;
+            y.textContent = t(it.year);
             box.appendChild(y);
         }
         if (it.tag) {
@@ -107,7 +108,9 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
         if (groups.size === 0) {
             const p = document.createElement('p');
             p.className = 'pub-empty';
-            p.textContent = query ? '「' + query + '」に一致する業績はありません．' : '業績はありません．';
+            p.textContent = query
+                ? (LANG === 'en' ? t('一致する業績はありません') + ' “' + query + '”.' : '「' + query + '」に一致する業績はありません．')
+                : t('業績はありません．');
             panel.appendChild(p);
         }
         // 検索中は全件表示と同じく年を表示する
@@ -115,7 +118,7 @@ const CATEGORY_ORDER = ['論文（査読あり）', '論文（査読なし）', 
         [...groups.keys()].sort((a, b) => categoryIndex(a) - categoryIndex(b) || a.localeCompare(b, 'ja')).forEach(c => {
             const h = document.createElement('h3');
             h.className = 'pub-category';
-            h.textContent = c + '（' + groups.get(c).length + '件）';
+            h.textContent = groups.get(c)[0].categoryLabel + paren(groups.get(c).length + t('件'));
             const ul = document.createElement('ul');
             ul.className = 'publication-list';
             groups.get(c).forEach(it => ul.appendChild(buildLi(it, showYear)));

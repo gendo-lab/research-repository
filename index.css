@@ -1,4 +1,6 @@
 @charset "utf-8";
+/* フォント: 端末に関係なく同じ見た目にするため Google Fonts から読み込む（英数字 Inter / 日本語 Noto Sans JP） */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap');
 
 /*
     配色: 遠藤研究室ウェブサイト（https://www.robotics.mech.e.titech.ac.jp/gendo/）の
@@ -23,7 +25,7 @@ body {
     margin: 0;
     padding: 0;
     background: var(--bg);
-    font-family: 'Roboto', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    font-family: 'Inter', 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
     color: var(--text);
 }
 
@@ -89,6 +91,55 @@ header h1 a,
 header h1 a:hover {
     color: var(--text-strong);
     text-decoration: none;
+}
+
+/* 日本語 / English の切り替え（ヘッダの右端．js_includes/i18n.js） */
+.lang-switch {
+    justify-self: end;
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.lang-switch button {
+    padding: 5px 12px;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.lang-switch button + button {
+    border-left: 1px solid var(--border);
+}
+
+.lang-switch button:hover {
+    background: var(--surface-2);
+    color: #fff;
+}
+
+.lang-switch button[aria-pressed="true"] {
+    background: var(--primary);
+    color: #fff;
+    cursor: default;
+}
+
+/* 幅が狭いとき（ロゴとタイトルが2段のとき）は，ヘッダの右上に置く */
+@media screen and (max-width: 900px) {
+    header {
+        position: relative;
+    }
+
+    .lang-switch {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 }
 
 /* 内容 */

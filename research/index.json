@@ -3,6 +3,6 @@
 # 項目（キー）を増やしたときは，下の keys にも追加してください．
 layout: null
 ---
-{% assign keys = "タイトル,日付,種別,査読,著者,言語,掲載誌,巻号ページ,DOI,URL,T2R2,PDF,状態,発明者,出願人,出願番号,出願日,公開番号,公開日,登録番号,登録日,受賞者,表彰機関,関連業績,媒体" | split: "," %}[{% assign sep = "" %}{% for p in site.pages %}{% assign head = p.path | slice: 0, 9 %}{% assign ext = p.name | split: "." | last %}{% if head == "research/" and ext == "md" %}{{ sep }}
+{% assign keys = "タイトル（日本語）,タイトル（英語）,日付,種別,査読,著者（日本語）,著者（英語）,言語,掲載誌（日本語）,掲載誌（英語）,巻号ページ,DOI,URL,T2R2,PDF,状態,発明者,出願人,出願番号,出願日,公開番号,公開日,登録番号,登録日,受賞者（日本語）,受賞者（英語）,表彰機関（日本語）,表彰機関（英語）,関連業績,媒体" | split: "," %}[{% assign sep = "" %}{% for p in site.pages %}{% assign head = p.path | slice: 0, 9 %}{% assign ext = p.name | split: "." | last %}{% if head == "research/" and ext == "md" %}{{ sep }}
 {"file": {{ p.path | jsonify }}, "url": {{ p.url | remove_first: "/" | jsonify }}, "data": { {% for k in keys %}{{ k | jsonify }}: {{ p[k] | jsonify }}{% unless forloop.last %}, {% endunless %}{% endfor %} }}{% assign sep = "," %}{% endif %}{% endfor %}
 ]
