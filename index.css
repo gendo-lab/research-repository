@@ -93,43 +93,54 @@ header h1 a:hover {
     text-decoration: none;
 }
 
-/* 日本語 / English の切り替え（ヘッダの右端．js_includes/i18n.js） */
+/* 日本語 / English の切り替え（ヘッダの右端．js_includes/i18n.js）
+   地球儀アイコン＋切り替え先の言語名だけを表示する（日本語のページでは「English」，英語のページでは「日本語」）．
+   白の文字と枠線（角丸はタブ・検索欄と同じ）にし，マウスを乗せると研究室の青になる */
 .lang-switch {
     justify-self: end;
-    display: inline-flex;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
+    display: flex;
 }
 
 .lang-switch button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 5px 12px;
     background: transparent;
-    color: var(--muted);
-    border: none;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 6px;
     font-family: inherit;
     font-size: 13px;
     line-height: 1.4;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.lang-switch button + button {
-    border-left: 1px solid var(--border);
+.lang-switch button::before {
+    content: "";
+    flex: none;
+    width: 14px;
+    height: 14px;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cellipse cx='12' cy='12' rx='4.2' ry='9.5'/%3E%3Cpath d='M2.5 12h19M4 7h16M4 17h16'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cellipse cx='12' cy='12' rx='4.2' ry='9.5'/%3E%3Cpath d='M2.5 12h19M4 7h16M4 17h16'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-.lang-switch button:hover {
-    background: var(--surface-2);
-    color: #fff;
-}
-
-.lang-switch button[aria-pressed="true"] {
+.lang-switch button:hover,
+.lang-switch button:focus-visible {
     background: var(--primary);
+    border-color: var(--primary);
     color: #fff;
-    cursor: default;
+    outline: none;
 }
 
-/* 幅が狭いとき（ロゴとタイトルが2段のとき）は，ヘッダの右上に置く */
+/* 今の言語のボタンは隠す（JS が aria-pressed を付けるまでは両方隠しておく） */
+.lang-switch button:not([aria-pressed="false"]) {
+    display: none;
+}
+
+/* 幅が狭いとき（ロゴとタイトルが2段のとき）は，ヘッダの右上に小さく置く（アイコンの下に文字） */
 @media screen and (max-width: 900px) {
     header {
         position: relative;
@@ -139,6 +150,14 @@ header h1 a:hover {
         position: absolute;
         top: 10px;
         right: 10px;
+    }
+
+    .lang-switch button {
+        flex-direction: column;
+        gap: 2px;
+        padding: 4px 6px;
+        font-size: 11px;
+        line-height: 1.2;
     }
 }
 
