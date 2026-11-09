@@ -1,7 +1,7 @@
 # 業績ファイルの書き方
 
 業績は **1件につき1ファイル** で，`research/<年>/` に置きます．
-ファイルを追加・修正して GitHub に push すると，数分でサイトに反映されます（HTML を書く必要はありません）．
+ファイルを追加・修正して `main` に取り込まれると（下の「リポジトリ編集時の注意」），数分でサイトに反映されます（HTML を書く必要はありません）．
 
 ```
 research/
@@ -14,12 +14,29 @@ research/
 └─ index.json              全業績の一覧（GitHub Pages が自動で作る．編集しない）
 ```
 
-## 追加のしかた
+## リポジトリ編集時の注意
 
-1. `_template/` から種類に合うひな形をコピーし，`research/<年>/` に置く
-2. ファイル名を `<種類>-<番号>.md` にする（例 `paper-202601.md`）
-3. 中身の `""` の間に値を書く
-4. push する
+`main`（公開されるブランチ）は保護されていて，**直接 push できません**．次の流れで反映します．
+
+1. `feature/pre_release` ブランチに切り替え，pull して最新にする
+2. 業績ファイルを追加・修正して `feature/pre_release` に push する
+3. GitHub で `feature/pre_release` → `main` の Pull Request を作る
+4. `system_admin` チームの誰かが承認したら，Merge する（数分でサイトに反映）
+
+- `main` への Pull Request は **`feature/pre_release` からのものだけ** 受け付けます（それ以外は自動チェック `check-source-branch` が失敗して Merge できません）．
+- 新しいブランチは作れません（全ブランチで作成が禁止されています）．`feature/pre_release` を使ってください．
+- 承認には `system_admin` チーム（`.github/CODEOWNERS` で指定）のレビューが1件必要です．最後に push した本人の承認は数えられません．
+- 承認後に追加で push すると承認は取り消されるので，もう一度承認をもらってください．
+- Merge の方法は「Create a merge commit」のみです（Squash・Rebase は使えません）．
+- `main` の削除・force push はできません．
+- `system_admin` チームは上のルールを免除されています（緊急時の直接 push・ブランチ作成用）．ふだんは同じ流れで作業してください．
+
+## 追加のしかた
+1. 現在自分がいるブランチが`feature/pre_release`にいて，fetch, pullされて最新であることを確認する
+2. `_template/` から種類に合うひな形をコピーし，`research/<年>/` に置く
+3. ファイル名を `<種類>-<番号>.md` にする（例 `paper-202601.md`）
+4. 中身の `""` の間に値を書く
+5. `feature/pre_release` に push し，`main` への Pull Request を作る（上の「リポジトリ編集時の注意」）
 
 | 種類 | ファイル名 | ひな形 |
 |---|---|---|
@@ -58,12 +75,12 @@ PDF: ""
 | タイトル | |
 | 種別 | `論文` / `国際会議発表` / `国内会議発表` / `解説・総説` / `著作` / `その他` |
 | 査読 | `査読あり` / `査読なし` |
-| 著者 | 例 `後藤 優斗, 遠藤 玄` |
+| 著者 | 例 `杉原 怜, 遠藤 玄` |
 | 言語 | `日本語` / `英語` |
 | 掲載誌 | 学術誌名・会議名 |
-| 巻号ページ | 例 `Vol. 42 No. 2 pp. 168-176`，講演番号のみなら `1A1-L07` |
+| 巻号ページ | 例 `Vol. 92 No. 953 p. 25-00128`，講演番号のみなら `1A1-L07` |
 | 日付 | 出版日（論文）または発表日（会議） |
-| DOI | `10.7210/jrsj.42.168` の形．あれば「論文を読む」ボタンが出る |
+| DOI | `10.1299/transjsme.25-00128` の形．あれば「論文を読む」ボタンが出る |
 | URL | DOI が無いときの論文ページ（IEEE Xplore など）．あれば「論文を読む」ボタンになる |
 | T2R2 | T2R2 の論文ページの URL（`https://t2r2.star.titech.ac.jp/cgi-bin/publicationinfo.cgi?q_publication_content_number=CTT…`）．記録用（ページには表示しない） |
 | PDF | 本文 PDF ファイルの URL（T2R2 なら `https://t2r2.star.titech.ac.jp/rrws/file/CTT…/ATD…/`）．あればページ最下部に「PDFをダウンロード」ボタンが出る |
