@@ -9,3 +9,5 @@ tools/review.csv
 tools/t2r2_report.csv
 # pythonのキャッシュ
 __pycache__/
+/docs
+tools/xls_to_md.py
